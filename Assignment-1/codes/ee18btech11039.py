@@ -76,5 +76,5 @@ plt.savefig('../figs/ee18btech11039_2.eps')
 plt.show()
 
 #If using termux
-#subprocess.run(shlex.split("termux-open ../figs/ee18btech11034_1.pdf"))
-#subprocess.run(shlex.split("termux-open ../figs/ee18btech11034_2.pdf"))
+#subprocess.run(shlex.split("termux-open ../figs/ee18btech11039_1.pdf"))
+#subprocess.run(shlex.split("termux-open ../figs/ee18btech11039_2.pdf"))
