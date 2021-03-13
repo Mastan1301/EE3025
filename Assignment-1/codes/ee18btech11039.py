@@ -14,6 +14,13 @@ order = 4
 cutoff_freq = 4000
 Wn = 2 * cutoff_freq / sampl_freq
 n = len(input_signal)
+print(n)
+s = 2 ** np.ceil(np.log2(n))
+while n < s: # Making the file size as 2 ^ k.
+	np.append(input_signal, 0)
+	n += 1
+
+sf.write('./Sound_Noise.wav', input_signal, sampl_freq)
 
 #Passing butterworth filter
 b, a = signal.butter(order, Wn, 'low')
