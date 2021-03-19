@@ -11,10 +11,10 @@ void fft(cd** x, int n){
     if (n == 1)
         return;
 
-    cd* odd = malloc(n/2 * sizeof(double)), *even = malloc(n/2 * sizeof(double));
+    cd* odd = malloc(n/2 * sizeof(cd)), *even = malloc(n/2 * sizeof(cd));
     for (int i = 0; 2 * i < n; i++) {
-        even[i] = *x[2*i];
-        odd[i] = *x[2*i+1];
+        even[i] = (*x)[2 * i];
+        odd[i] = (*x)[2 * i + 1];
     }
 
     fft(&even, n/2);
@@ -23,22 +23,22 @@ void fft(cd** x, int n){
     double ang = 2 * PI / n;
     cd w = CMPLX(1, 0), wn = CMPLX(cos(ang), sin(ang));
     for (int i = 0; 2 * i < n; i++) {
-        *x[i] = even[i] + w * odd[i];
-        *x[i + n/2] = even[i] - w * odd[i];
+        (*x)[i] = even[i] + w * odd[i];
+        (*x)[i + n/2] = even[i] - w * odd[i];
         w *= wn;
     }
-    // free(even);
-    // free(odd);
+    free(even);
+    free(odd);
 }
 
 void ifft(cd** x, int n){
     if (n == 1)
         return;
 
-    cd* odd = malloc(n/2 * sizeof(double)), *even = malloc(n/2 * sizeof(double));
+    cd* odd = malloc(n/2 * sizeof(cd)), *even = malloc(n/2 * sizeof(cd));
     for (int i = 0; 2 * i < n; i++) {
-        even[i] = *x[2*i];
-        odd[i] = *x[2*i+1];
+        even[i] = (*x)[2 * i];
+        odd[i] = (*x)[2 * i + 1];
     }
 
     ifft(&even, n/2);
@@ -47,12 +47,12 @@ void ifft(cd** x, int n){
     double ang =  -2 * PI / n;
     cd w = CMPLX(1, 0), wn = CMPLX(cos(ang), sin(ang));
     for (int i = 0; 2 * i < n; i++) {
-        *x[i] = (even[i] + w * odd[i])/2;
-        *x[i + n/2] = (even[i] - w * odd[i])/2;
+        (*x)[i] = (even[i] + w * odd[i])/2;
+        (*x)[i + n/2] = (even[i] - w * odd[i])/2;
         w *= wn;
     }
-    // free(even);
-    // free(odd);
+    free(even);
+    free(odd);
 }
 
 int main(){
@@ -60,14 +60,14 @@ int main(){
     cd* x = malloc(n * sizeof(cd));
     FILE *fin, *fout;
 
-    fin = fopen("./x.dat", "w");
+    fin = fopen("./x.dat", "r");
     // Generating random data and storing in a dat file
     for(int i = 0; i < n; i++){
-        cd val = CMPLX((double)rand()/RAND_MAX * 2.0 - 1.0, 0); // float in range -1 to 1
-        x[i] = val;
+        double val = (double)rand()/RAND_MAX * 2.0 - 1.0; // float in range -1 to 1
+        x[i] = CMPLX(val, 0);
         fprintf(fin, "%f\n", creal(val));
+        // printf("%f\n", creal(x[i]));
     }
-    fclose(fin);
 
     cd* X = malloc(n * sizeof(cd));
     cd* x1 = malloc(n * sizeof(cd));
@@ -85,8 +85,8 @@ int main(){
 
     double error = 0, norm = 0;
     for(int i = 0; i < n; i++){
-        error += (x[i] - x1[i]) * (x[i] - x1[i]);
-        norm += x[i] * x[i];
+        error += creal((x[i] - x1[i]) * (x[i] - x1[i]));
+        norm += creal(x[i] * x[i]);
     }
     error = sqrt(error);
     norm = sqrt(norm);
@@ -98,6 +98,7 @@ int main(){
         fprintf(fout, "%f + %fi\n", creal(X[i]), cimag(X[i]));
     }
     fclose(fout);
+    fclose(fin);
 
     return 0;
 }
