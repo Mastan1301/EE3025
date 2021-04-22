@@ -55,6 +55,5 @@ plt.plot(omega / np.pi, Hbp)
 plt.xlabel('$\omega/\pi$')
 plt.ylabel('$|H_{bp}(\omega)|$')
 plt.grid()
-plt.show()
 plt.savefig("../figs/fir_kaiser_window.eps")
-fir_coeff = hbp
+plt.show()
