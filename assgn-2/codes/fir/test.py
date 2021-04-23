@@ -52,7 +52,7 @@ omega = np.arange(-np.pi/2, np.pi/2 + np.pi/200, np.pi/200)
 Hlp = np.abs(np.polyval(hlp,np.exp(-1j*omega)))
 
 plt.figure()
-plt.plot(omega/np.pi,Hlp)
+plt.plot(omega/np.pi, Hlp)
 plt.xlabel('$\omega/\pi$')
 plt.ylabel('$|H_{lp}(\omega)|$')
 plt.title("Lowpass filter")
