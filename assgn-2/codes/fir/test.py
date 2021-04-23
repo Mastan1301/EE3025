@@ -3,6 +3,10 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+#If using termux
+import subprocess
+import shlex
+#end if
 
 L = 114 # Filter number
 Fs = 48 # Sampling freqency (kHz)
@@ -39,21 +43,37 @@ N = np.ceil((A - 8)/(4.57 * delomega))
 
 N = 100
 n = np.arange(-N, N)
+
+# The lowpass filter
 hlp = np.sin(n * omega_l)/(n * np.pi)
 hlp[N] = omega_l / np.pi # This handles the case when n[i] = 0
+omega = np.arange(-np.pi/2, np.pi/2 + np.pi/200, np.pi/200)
+
+Hlp = np.abs(np.polyval(hlp,np.exp(-1j*omega)))
+
+plt.figure()
+plt.plot(omega/np.pi,Hlp)
+plt.xlabel('$\omega/\pi$')
+plt.ylabel('$|H_{lp}(\omega)|$')
+plt.title("Lowpass filter")
+plt.grid()
+plt.savefig('../../figs/fir/lowpass.pdf')
+plt.savefig('../../figs/fir/lowpass.eps')
+# subprocess.run(shlex.split("termux-open ../../figs/fir/lowpass.pdf"))
+
 
 # The Bandpass filter
 hbp = 2 * hlp * np.cos(n * omega_c)
-
-# The bandpass filter plot
-omega = np.arange(-np.pi/2, np.pi/2, np.pi/200)
-
 Hbp = abs(np.polyval(hbp, np.exp(-1j * omega)))
 
 plt.figure()
 plt.plot(omega / np.pi, Hbp)
 plt.xlabel('$\omega/\pi$')
 plt.ylabel('$|H_{bp}(\omega)|$')
+plt.title("Bandpass filter")
 plt.grid()
-plt.savefig("../figs/fir_kaiser_window.eps")
-plt.show()
+# plt.savefig('../../figs/fir/bandpass.pdf')
+# plt.savefig('../../figs/fir/bandpass.eps')
+subprocess.run(shlex.split("termux-open ../../figs/fir/bandpass.pdf"))
+
+# plt.show()
